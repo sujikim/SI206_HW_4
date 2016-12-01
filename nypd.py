@@ -44,6 +44,20 @@ class Nypd(Sprite):
         randY = randint(60, 620)
         self.rect.center = (randX,randY)
 
+class PizzaMan(Sprite):
+    """ This class represents each whole pizza that will appear
+    It derives from the "Sprite" class in Pygame"""
+    def __init__(self):
+        Sprite.__init__(self)
+        self.image = image.load("pizzaman.bmp").convert_alpha()
+        self.rect = self.image.get_rect()
+
+    # move gold to a new random location
+    def move(self):
+        randX = randint(0, 820)
+        randY = randint(60, 620)
+        self.rect.center = (randX,randY)
+
 class BlackNypd(Sprite):
     def __init__(self):
         Sprite.__init__(self)
@@ -101,16 +115,18 @@ pizza1 = Pizza()
 colleen = Colleen()
 nypd = Nypd()
 blacknypd = BlackNypd()
+pizzaman = PizzaMan()
 
 
 # creates a group of sprites so all can be updated at once
 
-sprites = RenderPlain(pizza, pizza1, nypd, blacknypd, colleen)
+sprites = RenderPlain(pizza, pizza1, nypd, blacknypd, pizzaman, colleen)
 # sprites = RenderPlain(pizza, pizza1, colleen)
 # nypd_sprites = RenderPlain(nypd, blacknypd)
 
 
 DELAY = 1000;
+delay = 3000
 hits = 0
 time.set_timer(USEREVENT + 1, DELAY)
 
@@ -125,29 +141,47 @@ while True:
         if colleen.hit(pizza):
             mixer.Sound("pop.wav").play()
             pizza.move()
-            hits += 1
+            hits += 100
         if colleen.hit(pizza1):
             mixer.Sound("pop.wav").play()
             pizza1.move()
-            hits += 1
+            hits += 100
         if colleen.hit(nypd):
             mixer.Sound("cha-ching.wav").play()
             nypd.move()
-            hits += 5
+            hits += 500
             # pygame.time.delay(5000)
             # reset timer
         if colleen.hit(blacknypd):
             mixer.Sound("cha-ching.wav").play()
             # if e.type == USEREVENT + 3:
             blacknypd.move()
-            hits -= 5
+            hits -= 500
             time.set_timer(USEREVENT + 1, DELAY)
+        if colleen.hit(pizzaman):
+            mixer.Sound("cha-ching.wav").play()
+            # if e.type == USEREVENT + 3:
+            pizzaman.move()
+            hits += 1000
+            time.set_timer(USEREVENT + 1, DELAY)
+            
             
     elif e.type == USEREVENT + 1: # TIME has passed
         pizza.move()
         pizza1.move()
         nypd.move()
         blacknypd.move()
+        pizzaman.move()
+
+    elif hits < 0:
+        mixer.Sound("bomb.wav").play()
+        break
+        t = f.render("GAME OVER", False, (0, 0, 255))
+        screen.blit(t, (320, 200))
+        display.update()
+
+
+
 
 
 
