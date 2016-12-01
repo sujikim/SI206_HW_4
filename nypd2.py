@@ -3,6 +3,7 @@ from pygame.sprite import *
 from random import *
 
 
+
 # creating colors
 black = (0, 0, 0)
 white = (255, 255, 255)
@@ -72,17 +73,6 @@ class Colleen(Sprite):
         self.rect.center = mouse.get_pos()
 
 
-# def layers(self):
-#     layers = set()
-#     for layer in self.spritelayers.values():
-#         layers.add(layer)
-#     return list(layers)
-# def get_top_layer(self):
-#     return self.__spritelayers[self._spritelist[-1]]
-# def move_to_front(self, sprite):
-#     self.change_layer(sprite, self.get_top_layer())
-
-
 
 # main
 init()
@@ -104,13 +94,9 @@ blacknypd = BlackNypd()
 
 
 # creates a group of sprites so all can be updated at once
+sprites = Group(pizza, pizza1, colleen)
+nypd_sprites = Group(nypd, blacknypd)
 
-sprites = RenderPlain(pizza, pizza1, nypd, blacknypd, colleen)
-# sprites = RenderPlain(pizza, pizza1, colleen)
-# nypd_sprites = RenderPlain(nypd, blacknypd)
-
-
-DELAY = 1000;
 hits = 0
 time.set_timer(USEREVENT + 1, DELAY)
 
@@ -130,27 +116,25 @@ while True:
             mixer.Sound("pop.wav").play()
             pizza1.move()
             hits += 1
+        
         if colleen.hit(nypd):
             mixer.Sound("cha-ching.wav").play()
             nypd.move()
             hits += 5
-            # pygame.time.delay(5000)
             # reset timer
         if colleen.hit(blacknypd):
             mixer.Sound("cha-ching.wav").play()
-            # if e.type == USEREVENT + 3:
             blacknypd.move()
             hits -= 5
-            time.set_timer(USEREVENT + 1, DELAY)
+        time.set_timer(USEREVENT + 1, DELAY)
             
     elif e.type == USEREVENT + 1: # TIME has passed
         pizza.move()
         pizza1.move()
+    
+    elif e.type == USEREVENT + 10:
         nypd.move()
         blacknypd.move()
-
-
-
 
     # refill background color so that we can paint sprites in new locations
     screen.fill(bgcolor)
@@ -158,9 +142,8 @@ while True:
     screen.blit(t, (320, 0))        # draw text to screen.  Can you move it?
 
     # update and redraw sprites
-    # move_to_front(colleen)
     sprites.update()
     sprites.draw(screen)
-    # nypd_sprites.update()
-    # nypd_sprites.draw(screen)
+    nypd_sprites.update()
+    nypd_sprites.draw(s)
     display.update()

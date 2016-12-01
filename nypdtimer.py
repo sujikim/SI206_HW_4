@@ -1,6 +1,7 @@
 from pygame import *
 from pygame.sprite import *
 from random import *
+import random
 
 
 # creating colors
@@ -110,10 +111,6 @@ sprites = RenderPlain(pizza, pizza1, nypd, blacknypd, colleen)
 # nypd_sprites = RenderPlain(nypd, blacknypd)
 
 
-DELAY = 1000;
-hits = 0
-time.set_timer(USEREVENT + 1, DELAY)
-
 # loop until user quits
 while True:
     e = event.poll()
@@ -141,7 +138,7 @@ while True:
             # if e.type == USEREVENT + 3:
             blacknypd.move()
             hits -= 5
-            time.set_timer(USEREVENT + 1, DELAY)
+        time.set_timer(USEREVENT + 1, DELAY)
             
     elif e.type == USEREVENT + 1: # TIME has passed
         pizza.move()
@@ -161,6 +158,8 @@ while True:
     # move_to_front(colleen)
     sprites.update()
     sprites.draw(screen)
+    # nypd_sprites.update()
+    # nypd_sprites.draw(screen)
     # nypd_sprites.update()
     # nypd_sprites.draw(screen)
     display.update()
