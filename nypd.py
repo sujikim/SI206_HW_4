@@ -53,16 +53,19 @@ class Nypd(Sprite):
 # class BlackNypd(Nypd):
 
 
-class BlackNypd(Sprite):
+class BlackNypd(Nypd):
     def __init__(self):
-        Sprite.__init__(self)
+        Nypd.__init__(self)
         self.image = image.load("blacknypd.bmp").convert_alpha()
+        self.transColor = self.image.get_at((0,0))
+        self.image.set_colorkey(self.transColor)
+        self.rect = self.image.get_rect()
         self.rect = self.image.get_rect()
     
-    def move(self):
-        randX = randint(0, 820)
-        randY = randint(60, 620)
-        self.rect.center = (randX,randY)
+    # def move(self):
+    #     randX = randint(0, 820)
+    #     randY = randint(60, 620)
+    #     self.rect.center = (randX,randY)
 
 
 class Colleen(Sprite):
@@ -71,6 +74,8 @@ class Colleen(Sprite):
     def __init__(self):
         Sprite.__init__(self)
         self.image = image.load("colleeen.bmp").convert()
+        self.transColor = self.image.get_at((0,0))
+        self.image.set_colorkey(self.transColor)
         self.rect = self.image.get_rect()
 
     # Di shovel/cursor collide the gold?
@@ -118,9 +123,11 @@ colleen = Colleen()
 
 # creates a group of sprites so all can be updated at once
 
-sprites = RenderPlain(pizza, pizza1, nypd, blacknypd, colleen)
+#sprites = RenderPlain(pizza, pizza1, nypd, blacknypd, colleen)
+sprites = RenderPlain(pizza, pizza1)
 # sprites = RenderPlain(pizza, pizza1, colleen)
-# nypd_sprites = RenderPlain(nypd, blacknypd)
+nypd_sprites = RenderPlain(nypd, blacknypd)
+colleen_sprites = RenderPlain(colleen)
 
 
 DELAY = 1000;
@@ -132,13 +139,15 @@ time.set_timer(USEREVENT + 1, LONG_DELAY)
 
 # loop until user quits
 
-
 # screen.fill(black)
 # start = f.render("START", False, (255, 255, 255))
 # screen.blit(start, (310, 310))
 # display.update()
+nypd_time_counter = 0
 once = 0
 while True:
+    #pygame.sprite.LayeredUpdates.move_to_front(colleen)
+    nypd_time_counter += 1
 
     e = event.poll()
     # if e.type != QUIT and once == 0:
@@ -182,8 +191,8 @@ while True:
     elif e.type == USEREVENT + 1: # TIME has passed
         pizza.move()
         pizza1.move()
-        nypd.move()
-        blacknypd.move()
+        #nypd.move()
+        #blacknypd.move()
 
 
     elif hits < 0:
@@ -209,6 +218,18 @@ while True:
     # move_to_front(colleen)
     sprites.update()
     sprites.draw(screen)
+    if nypd_time_counter>100 and nypd_time_counter<140:
+        nypd_sprites.update()
+        nypd_sprites.draw(screen)
+    if nypd_time_counter == 140:
+        nypd_time_counter = 0
+        nypd.move()
+        blacknypd.move()
+        #nypd_sprites.update()
+        #nypd_sprites.draw(screen)
+    colleen_sprites.update()
+    colleen_sprites.draw(screen)
+
     display.update()
     # count += 1
 
