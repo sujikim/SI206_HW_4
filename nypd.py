@@ -8,17 +8,11 @@ black = (0, 0, 0)
 white = (255, 255, 255)
 blue = (0, 0, 255)
 pink = (242, 177, 225)
+green = (0,  255, 127)
 DELAY = 1000 #Seed a timer to move sprite
 
 # assigning background color
 bgcolor = pink  
-
-# creating sprites classes
-# class Start(Sprite):
-#     def __init__(self):
-#         Sprite.__init__(self)
-#         self.image = image.load("start.bmp").convert_alpha()
-#         self.rect = self.image.get_rect()
 
 
 class Pizza(Sprite):
@@ -26,11 +20,11 @@ class Pizza(Sprite):
     It derives from the "Sprite" class in Pygame"""
     def __init__(self):
         Sprite.__init__(self)
-        self.image = image.load("pizza.bmp").convert_alpha()
+        self.image = image.load("pizza.bmp").convert()
+        self.transColor = self.image.get_at((0,0))
+        self.image.set_colorkey(self.transColor)
         self.rect = self.image.get_rect()
 
-
-    #
     def move(self):
         randX = randint(0, 820)
         randY = randint(60, 620)
@@ -41,7 +35,9 @@ class Nypd(Sprite):
     It derives from the "Sprite" class in Pygame"""
     def __init__(self):
         Sprite.__init__(self)
-        self.image = image.load("nypd.bmp").convert_alpha()
+        self.image = image.load("nypd.bmp").convert()
+        self.transColor = self.image.get_at((0,0))
+        self.image.set_colorkey(self.transColor)
         self.rect = self.image.get_rect()
 
     # move gold to a new random location
@@ -50,16 +46,13 @@ class Nypd(Sprite):
         randY = randint(60, 620)
         self.rect.center = (randX,randY)
 
-# class BlackNypd(Nypd):
-
 
 class BlackNypd(Nypd):
     def __init__(self):
         Nypd.__init__(self)
-        self.image = image.load("blacknypd.bmp").convert_alpha()
+        self.image = image.load("blacknypd.bmp").convert()
         self.transColor = self.image.get_at((0,0))
         self.image.set_colorkey(self.transColor)
-        self.rect = self.image.get_rect()
         self.rect = self.image.get_rect()
     
     # def move(self):
@@ -114,6 +107,7 @@ f = font.Font(None, 50)
 # create the mole and shovel using the constructors
 pizza = Pizza()
 pizza1 = Pizza()
+pizza2 = Pizza()
 nypd = Nypd()
 blacknypd = BlackNypd()
 # start = Start()
@@ -124,18 +118,16 @@ colleen = Colleen()
 # creates a group of sprites so all can be updated at once
 
 #sprites = RenderPlain(pizza, pizza1, nypd, blacknypd, colleen)
-sprites = RenderPlain(pizza, pizza1)
+sprites = RenderPlain(pizza, pizza1, pizza2)
 # sprites = RenderPlain(pizza, pizza1, colleen)
 nypd_sprites = RenderPlain(nypd, blacknypd)
 colleen_sprites = RenderPlain(colleen)
 
 
-DELAY = 1000;
-LONG_DELAY = 10000;
+DELAY = 700;
+
 hits = 0
 time.set_timer(USEREVENT + 1, DELAY)
-time.set_timer(USEREVENT + 1, LONG_DELAY)
-# countdown = 
 
 # loop until user quits
 
@@ -150,20 +142,7 @@ while True:
     nypd_time_counter += 1
 
     e = event.poll()
-    # if e.type != QUIT and once == 0:
-    #     screen.fill(black)
-    #     gamestart = f.render("CLICK ANYWHERE TO START", False, (255, 255, 255))
-    #     screen.blit(gamestart, (250, 310))
-    #     display.update()
-    #     if e.type == MOUSEBUTTONDOWN:
-    #         colleen.hit(screen)
-    #         once += 1
 
-
-    # elif e.type == MOUSEBUTTONDOWN:
-    #     if colleen.hit(start):
-    #         continue
-    
     if e.type == QUIT:
         quit() 
     
@@ -174,6 +153,10 @@ while True:
             pizza.move()
             hits += 100
         if colleen.hit(pizza1):
+            mixer.Sound("pop.wav").play()
+            pizza1.move()
+            hits += 100
+        if colleen.hit(pizza2):
             mixer.Sound("pop.wav").play()
             pizza1.move()
             hits += 100
@@ -191,6 +174,7 @@ while True:
     elif e.type == USEREVENT + 1: # TIME has passed
         pizza.move()
         pizza1.move()
+        pizza2.move()
         #nypd.move()
         #blacknypd.move()
 
@@ -205,23 +189,35 @@ while True:
         display.update()
         break 
 
+    elif hits > 2000:
+        screen.fill(green)
+        win = f.render("YOU WIN!", False, (255, 255, 255))
+        win_display = f.render("FINAL SCORE: " + str(hits), False, (255, 255, 255))
+        screen.blit(win, (350, 310))
+        screen.blit(win_display, (250, 370))
+        display.update()
+        break
+
+
 
 
 
     # refill background color so that we can paint sprites in new locations
     screen.fill(bgcolor)
-    t = f.render("Pizza Score = " + str(hits), False, (255, 255, 255))
+    t = f.render("PIZZA SCORE = " + str(hits), False, (255, 255, 255))
+    tt = f.render("SCORE OVER 2000 TO WIN", False, (255, 255, 255))
     screen.blit(t, (0, 0))      # draw text to screen.  Can you move it?
+    screen.blit(tt, (0, 35))
 
 
     # update and redraw sprites
     # move_to_front(colleen)
     sprites.update()
     sprites.draw(screen)
-    if nypd_time_counter>100 and nypd_time_counter<140:
+    if nypd_time_counter>100 and nypd_time_counter<130:
         nypd_sprites.update()
         nypd_sprites.draw(screen)
-    if nypd_time_counter == 140:
+    if nypd_time_counter == 130:
         nypd_time_counter = 0
         nypd.move()
         blacknypd.move()
@@ -231,6 +227,6 @@ while True:
     colleen_sprites.draw(screen)
 
     display.update()
-    # count += 1
+
 
 
