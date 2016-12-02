@@ -44,19 +44,8 @@ class Nypd(Sprite):
         randY = randint(60, 620)
         self.rect.center = (randX,randY)
 
-class PizzaMan(Sprite):
-    """ This class represents each whole pizza that will appear
-    It derives from the "Sprite" class in Pygame"""
-    def __init__(self):
-        Sprite.__init__(self)
-        self.image = image.load("pizzaman.bmp").convert_alpha()
-        self.rect = self.image.get_rect()
+# class BlackNypd(Nypd):
 
-    # move gold to a new random location
-    def move(self):
-        randX = randint(0, 820)
-        randY = randint(60, 620)
-        self.rect.center = (randX,randY)
 
 class BlackNypd(Sprite):
     def __init__(self):
@@ -68,6 +57,20 @@ class BlackNypd(Sprite):
         randX = randint(0, 820)
         randY = randint(60, 620)
         self.rect.center = (randX,randY)
+
+# class PizzaMan(Sprite):
+#     """ This class represents each whole pizza that will appear
+#     It derives from the "Sprite" class in Pygame"""
+#     def __init__(self):
+#         Sprite.__init__(self)
+#         self.image = image.load("pizzaman.bmp").convert_alpha()
+#         self.rect = self.image.get_rect()
+
+#     # move gold to a new random location
+#     def move(self):
+#         randX = randint(0, 820)
+#         randY = randint(60, 620)
+#         self.rect.center = (randX,randY)
 
 class Colleen(Sprite):
     """ This class represents the icon of Colleen's head that the player 
@@ -112,15 +115,15 @@ f = font.Font(None, 50)
 # create the mole and shovel using the constructors
 pizza = Pizza()
 pizza1 = Pizza()
-colleen = Colleen()
 nypd = Nypd()
 blacknypd = BlackNypd()
-pizzaman = PizzaMan()
+# pizzaman = PizzaMan()
 
+colleen = Colleen()
 
 # creates a group of sprites so all can be updated at once
 
-sprites = RenderPlain(pizza, pizza1, nypd, blacknypd, pizzaman, colleen)
+sprites = RenderPlain(pizza, pizza1, nypd, blacknypd, colleen)
 # sprites = RenderPlain(pizza, pizza1, colleen)
 # nypd_sprites = RenderPlain(nypd, blacknypd)
 
@@ -158,12 +161,12 @@ while True:
             blacknypd.move()
             hits -= 500
             time.set_timer(USEREVENT + 1, DELAY)
-        if colleen.hit(pizzaman):
-            mixer.Sound("cha-ching.wav").play()
-            # if e.type == USEREVENT + 3:
-            pizzaman.move()
-            hits += 1000
-            time.set_timer(USEREVENT + 1, DELAY)
+        # if colleen.hit(pizzaman):
+        #     mixer.Sound("bomb.wav").play()
+        #     # if e.type == USEREVENT + 3:
+        #     pizzaman.move()
+        #     hits += 1000
+        #     time.set_timer(USEREVENT + 1, DELAY)
             
             
     elif e.type == USEREVENT + 1: # TIME has passed
@@ -171,25 +174,26 @@ while True:
         pizza1.move()
         nypd.move()
         blacknypd.move()
-        pizzaman.move()
+        # pizzaman.move()
 
     elif hits < 0:
         mixer.Sound("bomb.wav").play()
-        break
-        t = f.render("GAME OVER", False, (0, 0, 255))
-        screen.blit(t, (320, 200))
-        display.update()
+        gameover = f.render("Game Over", False, (255, 255, 255))
+        screen.blit(gameover, (200, 200))
+        # break
+        # gameover = f.render("Game Over", False, (255, 255, 255))
+        # screen.blit(gameover, (200, 200))
 
-
-
-
-
+        # display.set_caption('GAME OVER')
+        # display.update()
 
 
     # refill background color so that we can paint sprites in new locations
     screen.fill(bgcolor)
     t = f.render("Pizza Score = " + str(hits), False, (255, 255, 255))
-    screen.blit(t, (320, 0))        # draw text to screen.  Can you move it?
+    screen.blit(t, (0, 0))        # draw text to screen.  Can you move it?
+    gameover = f.render("Game Over", False, (255, 255, 255))
+    screen.blit(gameover, (200, 200))
 
     # update and redraw sprites
     # move_to_front(colleen)
