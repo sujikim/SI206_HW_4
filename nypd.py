@@ -14,6 +14,12 @@ DELAY = 1000 #Seed a timer to move sprite
 bgcolor = pink  
 
 # creating sprites classes
+# class Start(Sprite):
+#     def __init__(self):
+#         Sprite.__init__(self)
+#         self.image = image.load("start.bmp").convert_alpha()
+#         self.rect = self.image.get_rect()
+
 
 class Pizza(Sprite):
     """ This class represents each single slice of pizza that will appear
@@ -58,19 +64,6 @@ class BlackNypd(Sprite):
         randY = randint(60, 620)
         self.rect.center = (randX,randY)
 
-# class PizzaMan(Sprite):
-#     """ This class represents each whole pizza that will appear
-#     It derives from the "Sprite" class in Pygame"""
-#     def __init__(self):
-#         Sprite.__init__(self)
-#         self.image = image.load("pizzaman.bmp").convert_alpha()
-#         self.rect = self.image.get_rect()
-
-#     # move gold to a new random location
-#     def move(self):
-#         randX = randint(0, 820)
-#         randY = randint(60, 620)
-#         self.rect.center = (randX,randY)
 
 class Colleen(Sprite):
     """ This class represents the icon of Colleen's head that the player 
@@ -112,12 +105,14 @@ mouse.set_visible(False)
 
 f = font.Font(None, 50)
 
+
 # create the mole and shovel using the constructors
 pizza = Pizza()
 pizza1 = Pizza()
 nypd = Nypd()
 blacknypd = BlackNypd()
-# pizzaman = PizzaMan()
+# start = Start()
+
 
 colleen = Colleen()
 
@@ -129,17 +124,41 @@ sprites = RenderPlain(pizza, pizza1, nypd, blacknypd, colleen)
 
 
 DELAY = 1000;
-delay = 3000
+LONG_DELAY = 10000;
 hits = 0
 time.set_timer(USEREVENT + 1, DELAY)
+time.set_timer(USEREVENT + 1, LONG_DELAY)
+# countdown = 
 
 # loop until user quits
-while True:
-    e = event.poll()
-    if e.type == QUIT:
-        quit()
-        break
 
+
+# screen.fill(black)
+# start = f.render("START", False, (255, 255, 255))
+# screen.blit(start, (310, 310))
+# display.update()
+once = 0
+while True:
+
+    e = event.poll()
+    # if e.type != QUIT and once == 0:
+    #     screen.fill(black)
+    #     gamestart = f.render("CLICK ANYWHERE TO START", False, (255, 255, 255))
+    #     screen.blit(gamestart, (250, 310))
+    #     display.update()
+    #     if e.type == MOUSEBUTTONDOWN:
+    #         colleen.hit(screen)
+    #         once += 1
+
+
+    # elif e.type == MOUSEBUTTONDOWN:
+    #     if colleen.hit(start):
+    #         continue
+    
+    if e.type == QUIT:
+        quit() 
+    
+    
     elif e.type == MOUSEBUTTONDOWN:
         if colleen.hit(pizza):
             mixer.Sound("pop.wav").play()
@@ -153,52 +172,44 @@ while True:
             mixer.Sound("cha-ching.wav").play()
             nypd.move()
             hits += 500
-            # pygame.time.delay(5000)
-            # reset timer
+        # time.set_timer(USEREVENT + 1, LONG_DELAY)       
         if colleen.hit(blacknypd):
-            mixer.Sound("cha-ching.wav").play()
-            # if e.type == USEREVENT + 3:
+            mixer.Sound("bomb.wav").play()
             blacknypd.move()
             hits -= 500
-            time.set_timer(USEREVENT + 1, DELAY)
-        # if colleen.hit(pizzaman):
-        #     mixer.Sound("bomb.wav").play()
-        #     # if e.type == USEREVENT + 3:
-        #     pizzaman.move()
-        #     hits += 1000
-        #     time.set_timer(USEREVENT + 1, DELAY)
-            
+        time.set_timer(USEREVENT + 1, DELAY)
             
     elif e.type == USEREVENT + 1: # TIME has passed
         pizza.move()
         pizza1.move()
         nypd.move()
         blacknypd.move()
-        # pizzaman.move()
+
 
     elif hits < 0:
         mixer.Sound("bomb.wav").play()
-        gameover = f.render("Game Over", False, (255, 255, 255))
-        screen.blit(gameover, (200, 200))
-        # break
-        # gameover = f.render("Game Over", False, (255, 255, 255))
-        # screen.blit(gameover, (200, 200))
+        screen.fill(black)
+        gameover = f.render("GAME OVER", False, (255, 255, 255))
+        final_score = f.render("FINAL SCORE: " + str(hits), False, (255, 255, 255))
+        screen.blit(gameover, (310, 310))
+        screen.blit(final_score, (250, 370))
+        display.update()
+        break 
 
-        # display.set_caption('GAME OVER')
-        # display.update()
+
 
 
     # refill background color so that we can paint sprites in new locations
     screen.fill(bgcolor)
     t = f.render("Pizza Score = " + str(hits), False, (255, 255, 255))
-    screen.blit(t, (0, 0))        # draw text to screen.  Can you move it?
-    gameover = f.render("Game Over", False, (255, 255, 255))
-    screen.blit(gameover, (200, 200))
+    screen.blit(t, (0, 0))      # draw text to screen.  Can you move it?
+
 
     # update and redraw sprites
     # move_to_front(colleen)
     sprites.update()
     sprites.draw(screen)
-    # nypd_sprites.update()
-    # nypd_sprites.draw(screen)
     display.update()
+    # count += 1
+
+
