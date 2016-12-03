@@ -208,12 +208,12 @@ while True:
     # update and redraw sprites
     sprites.update()
     sprites.draw(screen)
-    if nypd_time_counter>100 and nypd_time_counter<130:
+    if nypd_time_counter>100 and nypd_time_counter<155:
         nypd_sprites.update()
         nypd_sprites.draw(screen)
         black_sprites.update()
         black_sprites.draw(screen)
-    if nypd_time_counter == 130:
+    if nypd_time_counter == 155:
         nypd_time_counter = 0
         nypd.move()
         blacknypd.move()
