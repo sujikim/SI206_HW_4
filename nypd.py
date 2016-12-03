@@ -31,7 +31,7 @@ class Pizza(Sprite):
         self.rect.center = (randX,randY)
 
 class Nypd(Sprite):
-    """ This class represents each whole pizza that will appear
+    """ This class represents each red nypd icon that will appear
     It derives from the "Sprite" class in Pygame"""
     def __init__(self):
         Sprite.__init__(self)
@@ -48,6 +48,8 @@ class Nypd(Sprite):
 
 
 class BlackNypd(Nypd):
+    """ This class represents each black nypd icon that will appear
+    It derives from the "Nypd" class in Pygame"""
     def __init__(self):
         Nypd.__init__(self)
         self.image = image.load("blacknypd.bmp").convert()
@@ -80,16 +82,6 @@ class Colleen(Sprite):
         self.rect.center = mouse.get_pos()
 
 
-# def layers(self):
-#     layers = set()
-#     for layer in self.spritelayers.values():
-#         layers.add(layer)
-#     return list(layers)
-# def get_top_layer(self):
-#     return self.__spritelayers[self._spritelist[-1]]
-# def move_to_front(self, sprite):
-#     self.change_layer(sprite, self.get_top_layer())
-
 
 
 # main
@@ -98,13 +90,13 @@ init()
 screen = display.set_mode((840, 680))
 display.set_caption('Colleen Pizza Depot')
 
-# hide the mouse cursor so we only see shovel
+# hide the mouse cursor so we only see colleen's face
 mouse.set_visible(False)
 
 f = font.Font(None, 50)
 
 
-# create the mole and shovel using the constructors
+# create the pizza slices and nypd icons using the constructors
 pizza = Pizza()
 pizza1 = Pizza()
 pizza2 = Pizza()
@@ -112,19 +104,16 @@ nypd = Nypd()
 blacknypd = BlackNypd()
 # start = Start()
 
-
 colleen = Colleen()
 
-# creates a group of sprites so all can be updated at once
 
-#sprites = RenderPlain(pizza, pizza1, nypd, blacknypd, colleen)
+# creating sprite groups so they can be called by groups
 sprites = RenderPlain(pizza, pizza1, pizza2)
-# sprites = RenderPlain(pizza, pizza1, colleen)
 nypd_sprites = RenderPlain(nypd, blacknypd)
 colleen_sprites = RenderPlain(colleen)
 
 
-DELAY = 700;
+DELAY = 600;
 
 hits = 0
 time.set_timer(USEREVENT + 1, DELAY)
@@ -163,15 +152,14 @@ while True:
         if colleen.hit(nypd):
             mixer.Sound("cha-ching.wav").play()
             nypd.move()
-            hits += 500
-        # time.set_timer(USEREVENT + 1, LONG_DELAY)       
+            hits += 500 
         if colleen.hit(blacknypd):
             mixer.Sound("bomb.wav").play()
             blacknypd.move()
             hits -= 500
         time.set_timer(USEREVENT + 1, DELAY)
             
-    elif e.type == USEREVENT + 1: # TIME has passed
+    elif e.type == USEREVENT + 1: # time passed
         pizza.move()
         pizza1.move()
         pizza2.move()
@@ -190,11 +178,12 @@ while True:
         break 
 
     elif hits > 2000:
+        mixer.Sound("fanfare.wav").play()
         screen.fill(green)
         win = f.render("YOU WIN!", False, (255, 255, 255))
         win_display = f.render("FINAL SCORE: " + str(hits), False, (255, 255, 255))
-        screen.blit(win, (350, 310))
-        screen.blit(win_display, (250, 370))
+        screen.blit(win, (330, 290))
+        screen.blit(win_display, (250, 350))
         display.update()
         break
 
@@ -211,7 +200,6 @@ while True:
 
 
     # update and redraw sprites
-    # move_to_front(colleen)
     sprites.update()
     sprites.draw(screen)
     if nypd_time_counter>100 and nypd_time_counter<130:
