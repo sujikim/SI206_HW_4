@@ -102,6 +102,7 @@ pizza1 = Pizza()
 pizza2 = Pizza()
 nypd = Nypd()
 blacknypd = BlackNypd()
+blacknypd1 = BlackNypd()
 # start = Start()
 
 colleen = Colleen()
@@ -110,6 +111,7 @@ colleen = Colleen()
 # creating sprite groups so they can be called by groups
 sprites = RenderPlain(pizza, pizza1, pizza2)
 nypd_sprites = RenderPlain(nypd, blacknypd)
+black_sprites = RenderPlain(blacknypd1)
 colleen_sprites = RenderPlain(colleen)
 
 
@@ -150,11 +152,15 @@ while True:
             pizza1.move()
             hits += 100
         if colleen.hit(nypd):
-            mixer.Sound("cha-ching.wav").play()
+            mixer.Sound("Star.wav").play()
             nypd.move()
             hits += 500 
         if colleen.hit(blacknypd):
-            mixer.Sound("bomb.wav").play()
+            mixer.Sound("mappipe.wav").play()
+            blacknypd.move()
+            hits -= 500
+        if colleen.hit(blacknypd1):
+            mixer.Sound("mappipe.wav").play()
             blacknypd.move()
             hits -= 500
         time.set_timer(USEREVENT + 1, DELAY)
@@ -168,7 +174,7 @@ while True:
 
 
     elif hits < 0:
-        mixer.Sound("bomb.wav").play()
+        mixer.Sound("Byebye.wav").play()
         screen.fill(black)
         gameover = f.render("GAME OVER", False, (255, 255, 255))
         final_score = f.render("FINAL SCORE: " + str(hits), False, (255, 255, 255))
@@ -205,6 +211,8 @@ while True:
     if nypd_time_counter>100 and nypd_time_counter<130:
         nypd_sprites.update()
         nypd_sprites.draw(screen)
+        black_sprites.update()
+        black_sprites.draw(screen)
     if nypd_time_counter == 130:
         nypd_time_counter = 0
         nypd.move()
